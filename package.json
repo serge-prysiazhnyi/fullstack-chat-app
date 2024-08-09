@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "sprysiazhnyi Node.js training",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc",
