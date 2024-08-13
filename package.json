@@ -6,7 +6,7 @@
   "scripts": {
     "start": "ts-node src/index.ts",
     "build": "tsc",
-    "dev": "nodemon src/index.ts",
+    "dev": "nodemon",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
