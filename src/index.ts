@@ -1,8 +1,9 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import http from 'http';
 // import { Server } from 'socket.io';
 import dotenv from 'dotenv';
+
+import { connectToMongoDB } from './db/connectToMongoDB';
 
 dotenv.config();
 
@@ -26,13 +27,8 @@ app.use('/api/auth', authRoutes);
 // });
 
 const PORT = process.env.PORT || 5000;
-const MONGO_URI = `mongodb://localhost:27017/${process.env.DB_NAME}`;
 
-mongoose
-  .connect(MONGO_URI)
-  .then(() => {
-    server.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((err) => console.error(err));
+server.listen(PORT, () => {
+  connectToMongoDB();
+  console.log(`Server running on port ${PORT}`);
+});

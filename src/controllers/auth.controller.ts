@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from '../models/User';
+import User from '../models/user.model';
+import { PASSWORD_MIN_LENGTH } from '../constants';
+import { generateUserProfilePic } from '../utils';
 
 export const login = async (req: Request, res: Response) => {
     try {
@@ -25,7 +27,13 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
     try {
-        const { username, password, email, confirmPassword } = req.body;
+        const { username, password, email, confirmPassword, profilePic } = req.body;
+
+        if (password.length < PASSWORD_MIN_LENGTH) {
+            return res
+                .status(400)
+                .send(`Password must be at least ${PASSWORD_MIN_LENGTH} characters`);
+        }
 
         if (password !== confirmPassword) {
             return res.status(400).send('Passwords do not match');
@@ -37,10 +45,18 @@ export const register = async (req: Request, res: Response) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const user = new User({ username, password: hashedPassword, email });
+
+        const user = new User({
+            username,
+            password: hashedPassword,
+            email,
+            profilePic: profilePic || generateUserProfilePic(username),
+        });
+
         await user.save();
         res.status(201).send('User registered');
     } catch (error) {
+        console.error((error as Error).message);
         res.status(500).send('Something went wrong');
     }
 };

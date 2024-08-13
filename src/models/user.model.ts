@@ -1,21 +1,11 @@
 import { Schema, model } from 'mongoose';
-
-interface IUser extends Document {
-  username: string;
-  password: string;
-  email: string;
-  avatar?: string;
-  createdAt: Date;
-  updatedAt: Date;
-  roles: string[];
-  lastActive: Date;
-}
+import { PASSWORD_MIN_LENGTH } from '../constants';
 
 const userSchema = new Schema({
-  username: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
+  username: { type: String, required: true },
+  password: { type: String, required: true, minLength: PASSWORD_MIN_LENGTH },
   email: { type: String, required: true, unique: true },
-  avatar: { type: String },
+  profilePic: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   roles: { type: [String], default: ['user'] },
