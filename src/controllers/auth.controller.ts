@@ -3,23 +3,27 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
 import { PASSWORD_MIN_LENGTH } from '../constants';
-import { generateUserProfilePic } from '../utils';
+import { generateUserProfilePic, generateTpkenAndSetCookie } from '../utils';
+
+const SALT = 10;
 
 export const login = async (req: Request, res: Response) => {
     try {
         const { password, email } = req.body;
         const user = await User.findOne({ email });
+        const isPasswordValid = await bcrypt.compare(password, user?.password || '');
 
-        if (!user || !(await bcrypt.compare(password, user.password))) {
+        if (!user || !isPasswordValid) {
             return res.status(401).send('Invalid credentials');
         }
 
-        const token = jwt.sign(
-            { userId: user._id },
-            process.env.JWT_SECRET as string,
-        );
+        generateTpkenAndSetCookie(res, user._id.toString());
 
-        res.json({ token });
+        res.status(200).json({
+            _id: user._id.toString(),
+            username: user.username,
+            profilePic: user.profilePic
+        });
     } catch (error) {
         res.status(500).send('Something went wrong');
     }
@@ -44,7 +48,7 @@ export const register = async (req: Request, res: Response) => {
             return res.status(400).send('User already exists');
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, SALT);
 
         const user = new User({
             username,
@@ -53,10 +57,25 @@ export const register = async (req: Request, res: Response) => {
             profilePic: profilePic || generateUserProfilePic(username),
         });
 
+        generateTpkenAndSetCookie(res, user._id.toString());
+
         await user.save();
-        res.status(201).send('User registered');
+        res.status(201).json({
+            _id: user._id.toString(),
+            username: user.username,
+            profilePic: user.profilePic,
+        });
     } catch (error) {
         console.error((error as Error).message);
         res.status(500).send('Something went wrong');
     }
 };
+
+export const logout = async (req: Request, res: Response) => {
+    try {
+        res.clearCookie('jwt');
+        res.status(200).send('Logged out');
+    } catch (error) {
+        res.status(500).send('Something went wrong');
+    }
+}
