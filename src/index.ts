@@ -10,6 +10,7 @@ dotenv.config();
 
 import authRoutes from './routes/auth.routes';
 import messageRoutes from './routes/message.routes';
+import userRoutes from './routes/user.routes';
 
 const app = express();
 const server = http.createServer(app);
@@ -20,6 +21,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/message', messageRoutes);
+app.use('/api/user', userRoutes);
 
 // io.on('connection', (socket) => {
 //     console.log('a user connected');

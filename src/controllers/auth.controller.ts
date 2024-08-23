@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
 import { PASSWORD_MIN_LENGTH } from '../constants';
 import { generateUserProfilePic, generateTpkenAndSetCookie } from '../utils';
