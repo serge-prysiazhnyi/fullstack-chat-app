@@ -1,11 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import Message from '../models/message.model';
 import Conversation from '../models/conversation.model';
 import { CustomRequest } from '../types';
 
 export const sendMessage = async (req: CustomRequest, res: Response) => {
-    console.log('id: ', req.params.id);
-
     try {
         const { message } = req.body;
         const receiverId = req.params.id;
@@ -43,7 +41,10 @@ export const sendMessage = async (req: CustomRequest, res: Response) => {
             res.status(200).json(newMessage);
         }
     } catch (error) {
-        console.log(error);
+        console.error(
+            'message.controller sendMessage error:',
+            (error as Error).message,
+        );
         res.status(500).send('Something went wrong');
     }
 };
@@ -64,7 +65,10 @@ export const getMessages = async (req: CustomRequest, res: Response) => {
 
         res.status(200).json(conversation?.messages);
     } catch (error) {
-        console.log(error);
+        console.error(
+            'message.controller getMessages error:',
+            (error as Error).message,
+        );
         res.status(500).send('Something went wrong');
     }
 };

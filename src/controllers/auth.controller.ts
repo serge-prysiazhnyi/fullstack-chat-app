@@ -10,7 +10,10 @@ export const login = async (req: Request, res: Response) => {
     try {
         const { password, email } = req.body;
         const user = await User.findOne({ email });
-        const isPasswordValid = await bcrypt.compare(password, user?.password || '');
+        const isPasswordValid = await bcrypt.compare(
+            password,
+            user?.password || '',
+        );
 
         if (!user || !isPasswordValid) {
             return res.status(401).send('Invalid credentials');
@@ -21,9 +24,10 @@ export const login = async (req: Request, res: Response) => {
         res.status(200).json({
             _id: user._id.toString(),
             username: user.username,
-            profilePic: user.profilePic
+            profilePic: user.profilePic,
         });
     } catch (error) {
+        console.error('auth.controller login error:', (error as Error).message);
         res.status(500).send('Something went wrong');
     }
 };
@@ -65,7 +69,7 @@ export const register = async (req: Request, res: Response) => {
             profilePic: user.profilePic,
         });
     } catch (error) {
-        console.error((error as Error).message);
+        console.error('auth.controller register error:', (error as Error).message);
         res.status(500).send('Something went wrong');
     }
 };
@@ -75,6 +79,7 @@ export const logout = async (req: Request, res: Response) => {
         res.clearCookie('jwt');
         res.status(200).send('Logged out');
     } catch (error) {
+        console.error('auth.controller logout error:', (error as Error).message);
         res.status(500).send('Something went wrong');
     }
-}
+};
