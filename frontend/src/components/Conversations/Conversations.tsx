@@ -1,3 +1,13 @@
+import { Conversation } from '../Conversation';
+
 export const Conversations = () => {
-  return <div>Conversations</div>;
+  return (
+    <div className="py-2 flex flex-col overflow-auto">
+      <Conversation />
+      <Conversation />
+      <Conversation />
+      <Conversation />
+      <Conversation />
+    </div>
+  );
 };
