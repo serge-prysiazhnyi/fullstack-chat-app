@@ -3,6 +3,10 @@ node_modules
 npm-debug.log
 yarn-error.log
 .env
+.env.production
+.env.development
+.env.test
+.env.local
 
 # Logs
 logs
