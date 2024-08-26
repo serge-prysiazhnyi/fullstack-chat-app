@@ -35,6 +35,7 @@ export const login = async (req: Request, res: Response) => {
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, password, email, confirmPassword, profilePic } = req.body;
+    console.log('🚀 ~ req.body:', req.body);
 
     if (password.length < PASSWORD_MIN_LENGTH) {
       return res
