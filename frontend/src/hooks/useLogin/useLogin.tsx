@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useAPI } from '../useAPI';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { useAuthContext } from '../../context/AuthContext/AuthContext';
 
 export interface LoginFormState {
   email: string;
@@ -11,6 +12,7 @@ export interface LoginFormState {
 export const useLogin = () => {
   const navigate = useNavigate();
   const { callAPI, loading, error } = useAPI();
+  const { setUser } = useAuthContext();
 
   const login = async (userData: LoginFormState) => {
     const { email, password } = userData;
@@ -27,6 +29,8 @@ export const useLogin = () => {
     });
 
     if (response?.status === 200) {
+      localStorage.setItem('chat-user', JSON.stringify(response.data));
+      setUser(response.data);
       navigate('/');
     }
   };
