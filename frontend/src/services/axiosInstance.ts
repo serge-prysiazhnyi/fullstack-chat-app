@@ -8,18 +8,22 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
-  (responce) => responce,
+  (responce) => {
+    // ToDo check this
+    console.log('🚀 ~ axiosInstance responce:', responce);
+
+    return responce;
+  },
   (error: AxiosError) => {
+    // ToDo fix this
     const navigate = useNavigate();
-    // handle errors here, such as redirecting for unauthorized responses
     if (error.response?.status === 401) {
       navigate('/login');
     }
-
-    console.error('axiosInstance request error:', error);
     return Promise.reject(error);
   },
 );
