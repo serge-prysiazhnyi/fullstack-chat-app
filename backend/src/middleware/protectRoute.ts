@@ -1,5 +1,5 @@
 import { Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { TokenExpiredError } from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 import { JwtPayload, CustomRequest } from '../types';
@@ -13,20 +13,26 @@ const protectRoute = async (
   next: NextFunction,
 ) => {
   try {
-    const token = req.cookies.jwt;
+    const authHeader = req.headers.authorization;
 
-    if (!token) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       res.status(401).send('Unauthorized: no token provided');
       return;
     }
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || '',
-    ) as JwtPayload;
+    const token = authHeader.split(' ')[1];
 
-    if (!decoded) {
+    let decoded: JwtPayload;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET || '') as JwtPayload;
+    } catch (error) {
+      if (error instanceof TokenExpiredError) {
+        res.status(401).send('Unauthorized: token has expired');
+        return;
+      }
+
       res.status(401).send('Unauthorized: token is not valid');
+      return;
     }
 
     const user = await User.findById(decoded.userId).select('-password');

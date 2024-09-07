@@ -3,11 +3,12 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAPI } from '../useAPI';
 import { useAuthContext } from '../../context/AuthContext/AuthContext';
+import { clearLocalStorage } from '../../utils/clearLocalStorage';
 
 export const useLogout = () => {
   const navigate = useNavigate();
   const { callAPI, error, loading } = useAPI();
-  const { setUser } = useAuthContext();
+  const { resetContext } = useAuthContext();
 
   const logout = async () => {
     const response = await callAPI({
@@ -16,9 +17,11 @@ export const useLogout = () => {
     });
 
     if (response?.status === 200) {
-      localStorage.removeItem('chat-user');
-      setUser(null);
+      clearLocalStorage();
+      resetContext();
+
       toast.success('Logged out successfully');
+
       navigate('/login');
     }
   };

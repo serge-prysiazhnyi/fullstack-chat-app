@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { useAPI } from '../../hooks/useAPI';
 import { useAuthContext } from '../../context/AuthContext/AuthContext';
+import { LocalStorageItems } from '../../types/sharedTypes';
 
 export interface SignUpFormState {
   email: string;
@@ -14,7 +15,7 @@ export interface SignUpFormState {
 export const useSignUp = () => {
   const navigate = useNavigate();
   const { loading, callAPI, error } = useAPI();
-  const { setUser } = useAuthContext();
+  const { setUser, setToken } = useAuthContext();
 
   const signUp = async (formState: SignUpFormState) => {
     if (formState.password !== formState.confirmPassword) {
@@ -39,9 +40,20 @@ export const useSignUp = () => {
     });
 
     if (response?.status === 201) {
-      localStorage.setItem('chat-user', JSON.stringify(response.data));
+      localStorage.setItem(
+        LocalStorageItems.CHAT_USER,
+        JSON.stringify(response.data),
+      );
+      localStorage.setItem(
+        LocalStorageItems.TOKEN,
+        JSON.stringify(response.data.token),
+      );
+
       setUser(response.data);
+      setToken(response.data.token);
+
       toast.success('Account created successfully');
+
       navigate('/');
     }
   };

@@ -1,5 +1,4 @@
 import axios, { AxiosError } from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.DEV
@@ -11,18 +10,13 @@ const axiosInstance = axios.create({
   withCredentials: true,
 });
 
-axiosInstance.interceptors.request.use(
-  (responce) => {
-    // ToDo check this
-    console.log('🚀 ~ axiosInstance responce:', responce);
-
-    return responce;
-  },
+axiosInstance.interceptors.response.use(
+  (responce) => responce,
   (error: AxiosError) => {
-    // ToDo fix this
-    const navigate = useNavigate();
     if (error.response?.status === 401) {
-      navigate('/login');
+      console.error('error: ', error);
+
+      // ToDo add redirect to /login
     }
     return Promise.reject(error);
   },

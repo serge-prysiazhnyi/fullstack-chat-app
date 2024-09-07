@@ -24,7 +24,7 @@ export const setTokenCookie = (res: Response, token: string) => {
   });
 };
 
-export const generateTpkenAndSetCookie = (res: Response, userId: string) => {
+export const generateTokenAndSetCookie = (res: Response, userId: string) => {
   const token = generateToken(userId, '15d');
   setTokenCookie(res, token);
 };

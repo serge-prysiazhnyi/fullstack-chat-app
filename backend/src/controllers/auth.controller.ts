@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/user.model';
 import { PASSWORD_MIN_LENGTH } from '../constants';
-import { generateUserProfilePic, generateTpkenAndSetCookie } from '../utils';
+import { generateUserProfilePic, generateToken } from '../utils';
 
 const SALT = 10;
 
@@ -19,12 +19,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).send('Invalid credentials');
     }
 
-    generateTpkenAndSetCookie(res, user._id.toString());
+    const token = generateToken(user._id.toString(), '15d');
 
     res.status(200).json({
       _id: user._id.toString(),
       username: user.username,
       profilePic: user.profilePic,
+      token,
     });
   } catch (error) {
     console.error('auth.controller login error:', (error as Error).message);
@@ -35,7 +36,6 @@ export const login = async (req: Request, res: Response) => {
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, password, email, confirmPassword, profilePic } = req.body;
-    console.log('🚀 ~ req.body:', req.body);
 
     if (password.length < PASSWORD_MIN_LENGTH) {
       return res
@@ -61,13 +61,14 @@ export const register = async (req: Request, res: Response) => {
       profilePic: profilePic || generateUserProfilePic(username),
     });
 
-    generateTpkenAndSetCookie(res, user._id.toString());
+    const token = generateToken(user._id.toString(), '15d');
 
     await user.save();
     res.status(201).json({
       _id: user._id.toString(),
       username: user.username,
       profilePic: user.profilePic,
+      token,
     });
   } catch (error) {
     console.error('auth.controller register error:', (error as Error).message);

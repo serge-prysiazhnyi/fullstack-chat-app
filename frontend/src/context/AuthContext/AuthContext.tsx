@@ -1,4 +1,5 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
+import { LocalStorageItems } from '../../types/sharedTypes';
 
 interface UserData {
   profilePic: string;
@@ -8,12 +9,18 @@ interface UserData {
 
 interface AuthContextType {
   user: UserData | null;
+  token: string | null;
   setUser: React.Dispatch<React.SetStateAction<unknown>>;
+  setToken: React.Dispatch<React.SetStateAction<unknown>>;
+  resetContext: () => void;
 }
 
 export const AuthContext = React.createContext<AuthContextType>({
   user: null,
+  token: null,
   setUser: () => {},
+  setToken: () => {},
+  resetContext: () => {},
 });
 
 type AuthContextProviderProps = {
@@ -22,11 +29,11 @@ type AuthContextProviderProps = {
 
 export const useAuthContext = () => useContext(AuthContext);
 
-const getInitialUser = () => {
-  const savedUser = localStorage.getItem('chat-user');
+const getInitialStorageItem = (key: string) => {
+  const savedItem = localStorage.getItem(key);
 
-  if (!!savedUser && typeof savedUser === 'string') {
-    return JSON.parse(localStorage.getItem('chat-user') as string);
+  if (!!savedItem && typeof savedItem === 'string') {
+    return JSON.parse(localStorage.getItem(key) as string);
   }
 
   return null;
@@ -35,10 +42,21 @@ const getInitialUser = () => {
 export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   children,
 }) => {
-  const [user, setUser] = useState(getInitialUser());
+  const [user, setUser] = useState(
+    getInitialStorageItem(LocalStorageItems.CHAT_USER),
+  );
+  const [token, setToken] = useState(
+    getInitialStorageItem(LocalStorageItems.TOKEN),
+  );
+  const resetContext = useCallback(() => {
+    setUser(null);
+    setToken(null);
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider
+      value={{ user, setUser, token, setToken, resetContext }}
+    >
       {children}
     </AuthContext.Provider>
   );

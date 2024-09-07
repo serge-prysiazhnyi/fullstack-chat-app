@@ -3,6 +3,7 @@ import { useAPI } from '../useAPI';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuthContext } from '../../context/AuthContext/AuthContext';
+import { LocalStorageItems } from '../../types/sharedTypes';
 
 export interface LoginFormState {
   email: string;
@@ -12,7 +13,7 @@ export interface LoginFormState {
 export const useLogin = () => {
   const navigate = useNavigate();
   const { callAPI, loading, error } = useAPI();
-  const { setUser } = useAuthContext();
+  const { setUser, setToken } = useAuthContext();
 
   const login = async (userData: LoginFormState) => {
     const { email, password } = userData;
@@ -29,8 +30,18 @@ export const useLogin = () => {
     });
 
     if (response?.status === 200) {
-      localStorage.setItem('chat-user', JSON.stringify(response.data));
+      localStorage.setItem(
+        LocalStorageItems.CHAT_USER,
+        JSON.stringify(response.data),
+      );
+      localStorage.setItem(
+        LocalStorageItems.TOKEN,
+        JSON.stringify(response.data.token),
+      );
+
       setUser(response.data);
+      setToken(response.data.token);
+
       navigate('/');
     }
   };
