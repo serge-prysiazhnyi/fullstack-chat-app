@@ -12,14 +12,14 @@ interface State {
   selectedConversation: string | null;
   messages: string[];
   // ToDo adjust this
-  users: any[];
+  users: unknown[];
 }
 
 type Action =
   | { type: ActionType.SET_SELECTED_CONVERSATIONS; payload: string }
   | { type: ActionType.SET_MESSAGES; payload: string[] }
   // ToDo adjust this
-  | { type: ActionType.SET_USERS; payload: any[] };
+  | { type: ActionType.SET_USERS; payload: unknown[] };
 
 const initialState = {
   selectedConversation: null,
