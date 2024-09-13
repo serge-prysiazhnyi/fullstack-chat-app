@@ -1,4 +1,10 @@
-export const Message = () => {
+import React from 'react';
+
+interface MessageProps {
+  message: string;
+}
+
+export const Message: React.FC<MessageProps> = ({ message }) => {
   return (
     <div className="chat chat-end">
       <div className="chat-image avatar">
@@ -9,7 +15,7 @@ export const Message = () => {
           />
         </div>
       </div>
-      <div className="chat-bubble text-white bg-blue-500 ">Hi!</div>
+      <div className="chat-bubble text-white bg-blue-500 ">{message}</div>
     </div>
   );
 };

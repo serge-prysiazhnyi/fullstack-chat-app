@@ -1,28 +1,27 @@
-import { useState, useCallback, useContext } from 'react';
+import { useState, useCallback } from 'react';
 import { AxiosError, AxiosRequestConfig } from 'axios';
-import axiosInstance from '../../services/axiosInstance';
-import { AuthContext } from '../../context/AuthContext/AuthContext';
-import { addAuthorizationHeader } from '../../utils/addAuthorizationHeader';
+import { callAPI as useAPICall } from '../../services/callAPI';
 
 export const useAPI = () => {
-  const { token } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<AxiosError | null>(null);
   // const source = axios.CancelToken.source();
 
-  const callAPI = useCallback(async (options: AxiosRequestConfig) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const config = addAuthorizationHeader(token, options);
-
-      return await axiosInstance.request(config);
-    } catch (error: unknown) {
-      setError(error as AxiosError);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const callAPI = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async <T = any, D = any>(options: AxiosRequestConfig) => {
+      setLoading(true);
+      setError(null);
+      try {
+        return await useAPICall<T, D>(options);
+      } catch (error: unknown) {
+        setError(error as AxiosError);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
 
   // useEffect(() => {
   //   return () => {

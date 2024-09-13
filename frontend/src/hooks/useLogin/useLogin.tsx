@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { useAuthContext } from '../../context/AuthContext/AuthContext';
 import { LocalStorageItems } from '../../types/sharedTypes';
+import { apiUrls } from '../../services/apiUrls';
 
 export interface LoginFormState {
   email: string;
@@ -25,7 +26,7 @@ export const useLogin = () => {
 
     const response = await callAPI({
       method: 'POST',
-      url: 'auth/login',
+      url: apiUrls.LOGIN,
       data: { email, password },
     });
 

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAPI } from '../../hooks/useAPI';
 import { useAuthContext } from '../../context/AuthContext/AuthContext';
 import { LocalStorageItems } from '../../types/sharedTypes';
+import { apiUrls } from '../../services/apiUrls';
 
 export interface SignUpFormState {
   email: string;
@@ -35,7 +36,7 @@ export const useSignUp = () => {
 
     const response = await callAPI({
       method: 'POST',
-      url: 'auth/register',
+      url: apiUrls.REGISTER,
       data: formState,
     });
 

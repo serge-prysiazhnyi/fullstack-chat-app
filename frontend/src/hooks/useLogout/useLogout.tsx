@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAPI } from '../useAPI';
 import { useAuthContext } from '../../context/AuthContext/AuthContext';
 import { clearLocalStorage } from '../../utils/clearLocalStorage';
+import { apiUrls } from '../../services/apiUrls';
 
 export const useLogout = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export const useLogout = () => {
   const logout = async () => {
     const response = await callAPI({
       method: 'POST',
-      url: 'auth/logout',
+      url: apiUrls.LOGOUT,
     });
 
     if (response?.status === 200) {
