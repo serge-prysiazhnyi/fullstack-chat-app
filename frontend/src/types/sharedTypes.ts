@@ -22,3 +22,24 @@ export interface Message extends BaseEntity {
   receiverId: string;
   senderId: string;
 }
+
+export interface UserLoginData {
+  email: string;
+  password: string;
+}
+
+export interface UserRegisterData extends UserLoginData {
+  username: string;
+  confirmPassword: string;
+}
+
+export interface LoginResponse extends User {
+  token: string;
+}
+
+export enum LoadingStates {
+  IDLE = 'idle',
+  LOADING = 'loading',
+  SUCCEEDED = 'succeeded',
+  FAILED = 'failed',
+}

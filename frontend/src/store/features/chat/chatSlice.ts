@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { Message, User } from '../../../types/sharedTypes';
+import { Message, User, LoadingStates } from '../../../types/sharedTypes';
 import { callAPI } from '../../../services/callAPI';
 import { RootState } from '../../store';
 import { apiUrls } from '../../../services/apiUrls';
@@ -8,7 +8,7 @@ interface ChatState {
   messages: Message[] | null;
   selectedConversation: string | null;
   users: User[];
-  loading: 'idle' | 'loading' | 'succeeded' | 'failed';
+  loading: LoadingStates;
   error: string | null;
 }
 
@@ -16,7 +16,7 @@ const initialState: ChatState = {
   messages: null,
   selectedConversation: null,
   users: [],
-  loading: 'idle',
+  loading: LoadingStates.IDLE,
   error: null,
 };
 
@@ -61,18 +61,18 @@ const chatSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchUsersList.pending, (state) => {
-        state.loading = 'loading';
+        state.loading = LoadingStates.LOADING;
         state.error = null;
       })
       .addCase(
         fetchUsersList.fulfilled,
         (state, action: PayloadAction<User[]>) => {
           state.users = action.payload;
-          state.loading = 'succeeded';
+          state.loading = LoadingStates.SUCCEEDED;
         },
       )
       .addCase(fetchUsersList.rejected, (state, action) => {
-        state.loading = 'failed';
+        state.loading = LoadingStates.FAILED;
         console.log('action: fetchUsersList error', action.error);
 
         state.error = action.error.message || 'Failed to fetch users';
@@ -80,18 +80,18 @@ const chatSlice = createSlice({
 
     builder
       .addCase(fetchConversationMessages.pending, (state) => {
-        state.loading = 'loading';
+        state.loading = LoadingStates.LOADING;
         state.error = null;
       })
       .addCase(
         fetchConversationMessages.fulfilled,
         (state, action: PayloadAction<Message[]>) => {
           state.messages = action.payload;
-          state.loading = 'succeeded';
+          state.loading = LoadingStates.SUCCEEDED;
         },
       )
       .addCase(fetchConversationMessages.rejected, (state, action) => {
-        state.loading = 'failed';
+        state.loading = LoadingStates.FAILED;
         console.log('action: fetchConversationMessages error', action.error);
         state.error = action.error.message || 'Failed to fetch messages';
       });

@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { AppStore } from '../store/store';
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.DEV
@@ -22,5 +23,22 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+export const setupAxiosInseptors = (store: AppStore) => {
+  axiosInstance.interceptors.request.use(
+    (config) => {
+      const token = store.getState().auth.token;
+
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    },
+  );
+};
 
 export default axiosInstance;

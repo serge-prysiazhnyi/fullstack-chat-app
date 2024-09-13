@@ -13,6 +13,7 @@ export const useAPI = () => {
       setLoading(true);
       setError(null);
       try {
+        // ToDo - best approach for fallback for token ?
         return await useAPICall<T, D>(options);
       } catch (error: unknown) {
         setError(error as AxiosError);

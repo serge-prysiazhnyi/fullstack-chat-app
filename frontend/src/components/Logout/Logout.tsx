@@ -1,16 +1,32 @@
 /// <reference types="vite-plugin-svgr/client" />
 import LogoutIcon from '../../assets/logout.svg?react';
-import { useLogout } from '../../hooks/useLogout';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { logout, selectLoading } from '../../store/features/auth/authSlice';
 import { Button } from '../Button';
+import { LoadingStates } from '../../types/sharedTypes';
+import { clearLocalStorage } from '../../utils/clearLocalStorage';
 
 export const Logout = () => {
-  const { logout, loading } = useLogout();
+  const dispatch = useAppDispatch();
+  const loading = useSelector(selectLoading);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    dispatch(logout()).then(() => {
+      clearLocalStorage();
+      toast.success('Logged out successfully');
+      navigate('/login');
+    });
+  };
 
   return (
     <Button
-      onClick={() => logout()}
-      className="flex bg-transparent"
-      loading={loading}
+      onClick={handleLogout}
+      className="flex bg-transparent hover:bg-orange-300 p-2 rounded cursor-pointer"
+      loading={loading === LoadingStates.LOADING}
     >
       <LogoutIcon className="w-full h-6" />
       <span className="ml-2">Logout</span>

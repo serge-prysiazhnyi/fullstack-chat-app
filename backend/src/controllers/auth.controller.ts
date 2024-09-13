@@ -25,6 +25,11 @@ export const login = async (req: Request, res: Response) => {
       _id: user._id.toString(),
       username: user.username,
       profilePic: user.profilePic,
+      lastActive: user.lastActive,
+      roles: user.roles,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
       token,
     });
   } catch (error) {

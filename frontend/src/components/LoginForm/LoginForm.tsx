@@ -1,20 +1,30 @@
 import { useState } from 'react';
-import { useLogin } from '../../hooks/useLogin';
-import { LoginFormState } from '../../hooks/useLogin/useLogin';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { login, selectLoading } from '../../store/features/auth/authSlice';
+import { UserLoginData, LoadingStates } from '../../types/sharedTypes';
 import { Button } from '../Button';
 
 export const LoginForm = () => {
-  const [formState, setFormState] = useState<LoginFormState>({
+  const [formState, setFormState] = useState<UserLoginData>({
     email: '',
     password: '',
   });
 
-  const { login, loading } = useLogin();
+  const dispatch = useAppDispatch();
+  const loading = useSelector(selectLoading);
   const canSubmit = Object.values(formState).every((value) => !!value);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    login({ email: formState.email, password: formState.password });
+
+    if (!formState.password.length || !formState.email.length) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    dispatch(login({ email: formState.email, password: formState.password }));
   };
 
   return (
@@ -51,7 +61,7 @@ export const LoginForm = () => {
       </div>
       <Button
         className="btn btn-block btn-primary btn-sm mt-2"
-        loading={loading}
+        loading={loading === LoadingStates.LOADING}
         disabled={!canSubmit}
         type="submit"
       >

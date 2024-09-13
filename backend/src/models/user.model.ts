@@ -9,6 +9,8 @@ export interface IUser extends Document {
   profilePic: string;
   roles: string[];
   lastActive: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const userSchema = new Schema<IUser>(

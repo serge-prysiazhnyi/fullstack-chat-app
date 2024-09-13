@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { SignUpFormState } from '../../hooks/useSignUp/useSignUp';
-import { useSignUp } from '../../hooks/useSignUp/useSignUp';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { register, selectLoading } from '../../store/features/auth/authSlice';
 import { Button } from '../Button';
+import { UserRegisterData, LoadingStates } from '../../types/sharedTypes';
 
-const initialFormState: SignUpFormState = {
+const initialFormState: UserRegisterData = {
   email: '',
   username: '',
   password: '',
@@ -11,13 +14,35 @@ const initialFormState: SignUpFormState = {
 };
 
 export const SignUpForm = () => {
-  const [formState, setFormState] = useState<SignUpFormState>(initialFormState);
-  const { loading, signUp } = useSignUp();
+  const [formState, setFormState] =
+    useState<UserRegisterData>(initialFormState);
+
+  const loading = useSelector(selectLoading);
+  const dispatch = useAppDispatch();
+
   const canSubmit = Object.values(formState).every((value) => !!value);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    signUp(formState);
+
+    if (formState.password !== formState.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    if (formState.password.length < 8) {
+      toast.error('Password must be at least 8 characters long');
+      return;
+    }
+
+    if (Object.values(formState).some((value) => !value)) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    dispatch(register(formState)).then(() => {
+      toast.success('Account created successfully');
+    });
   };
 
   return (
@@ -87,7 +112,7 @@ export const SignUpForm = () => {
       </div>
       <Button
         className="btn btn-block btn-primary btn-sm mt-2"
-        loading={loading}
+        loading={loading === LoadingStates.LOADING}
         disabled={!canSubmit}
         type="submit"
       >

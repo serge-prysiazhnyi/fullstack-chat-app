@@ -1,15 +1,16 @@
 import { Route, Routes, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Login from './pages/Login/Login';
 import Home from './pages/Home/Home';
 import SignUp from './pages/Signup/SignUp';
 import { Toaster } from 'react-hot-toast';
-import { useAuthContext } from './context/AuthContext/AuthContext';
+import { selectUser } from '../src/store/features/auth/authSlice';
 
 function App() {
-  const { user } = useAuthContext();
+  const user = useSelector(selectUser);
 
   return (
-    <div className="p-4 h-screen flex items-center justify-center">
+    <div className="p-4 grid auto-cols-auto">
       <Toaster />
       <Routes>
         {user ? (

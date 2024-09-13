@@ -3,19 +3,19 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import App from './App.tsx';
-import { AuthContextProvider } from './context/AuthContext/AuthContext.tsx';
 import { store } from './store/store.ts';
+import { setupAxiosInseptors } from './services/axiosInstance.ts';
 
 import './styles/tailwind.css';
 import './index.css';
+
+setupAxiosInseptors(store);
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <AuthContextProvider>
-          <App />
-        </AuthContextProvider>
+        <App />
       </BrowserRouter>
     </Provider>
   </StrictMode>,
