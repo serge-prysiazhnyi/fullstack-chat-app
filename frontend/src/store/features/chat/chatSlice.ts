@@ -57,6 +57,13 @@ const chatSlice = createSlice({
     setSelectedConversations(state, action: PayloadAction<string>) {
       state.selectedConversation = action.payload;
     },
+    resetChatSliceState(state) {
+      state.messages = initialState.messages;
+      state.selectedConversation = initialState.selectedConversation;
+      state.users = initialState.users;
+      state.loading = initialState.loading;
+      state.error = initialState.error;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,5 +113,6 @@ export const selectChatSliceError = (state: RootState) => state.chat.error;
 export const selectActiveConversation = (state: RootState) =>
   state.chat.selectedConversation;
 
-export const { setSelectedConversations } = chatSlice.actions;
+export const { setSelectedConversations, resetChatSliceState } =
+  chatSlice.actions;
 export default chatSlice.reducer;

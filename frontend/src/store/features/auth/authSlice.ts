@@ -12,6 +12,7 @@ import {
 } from '../../../types/sharedTypes';
 import { clearLocalStorage } from '../../../utils/clearLocalStorage';
 import { getInitialStorageItem } from '../../../utils/getInitialStorageItem';
+import { resetChatSliceState } from '../chat/chatSlice';
 
 interface AuthState {
   token: string | null;
@@ -71,14 +72,18 @@ export const register = createAsyncThunk(
   },
 );
 
-export const logout = createAsyncThunk('auth/logout', async () => {
-  await callAPI({
-    method: 'POST',
-    url: apiUrls.LOGOUT,
-  });
+export const logout = createAsyncThunk(
+  'auth/logout',
+  async (_, { dispatch }) => {
+    await callAPI({
+      method: 'POST',
+      url: apiUrls.LOGOUT,
+    });
 
-  clearLocalStorage();
-});
+    dispatch(resetChatSliceState());
+    clearLocalStorage();
+  },
+);
 
 const authSlice = createSlice({
   name: 'auth',
