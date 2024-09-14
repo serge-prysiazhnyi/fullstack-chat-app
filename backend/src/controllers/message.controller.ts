@@ -32,14 +32,21 @@ export const sendMessage = async (req: CustomRequest, res: Response) => {
       message,
     });
 
-    if (newMessage) {
-      conversation.messages.push(newMessage._id);
+    conversation.messages.push(newMessage._id);
 
-      // Use Promise.all to save both the conversation and the message in parallel
-      await Promise.all([conversation.save(), newMessage.save()]);
+    // Use Promise.all to save both the conversation and the message in parallel
+    const [savedMessage, updatedConversation] = await Promise.all([
+      conversation.save(),
+      newMessage.save(),
+    ]);
 
-      res.status(200).json(newMessage);
+    if (!savedMessage || !updatedConversation) {
+      return res
+        .status(500)
+        .json({ message: 'Failed to create message or update conversation' });
     }
+
+    return res.status(201).json(newMessage);
   } catch (error) {
     console.error(
       'message.controller sendMessage error:',
@@ -60,7 +67,7 @@ export const getMessages = async (req: CustomRequest, res: Response) => {
     }).populate('messages');
 
     if (!conversation) {
-      res.status(200).json([]);
+      return res.status(200).json([]);
     }
 
     res.status(200).json(conversation?.messages);
