@@ -2,7 +2,10 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { register, selectLoading } from '../../store/features/auth/authSlice';
+import {
+  register,
+  selectLoadingState,
+} from '../../store/features/auth/authSlice';
 import { Button } from '../Button';
 import { UserRegisterData, LoadingStates } from '../../types/sharedTypes';
 
@@ -17,7 +20,7 @@ export const SignUpForm = () => {
   const [formState, setFormState] =
     useState<UserRegisterData>(initialFormState);
 
-  const loading = useSelector(selectLoading);
+  const loading = useSelector(selectLoadingState);
   const dispatch = useAppDispatch();
 
   const canSubmit = Object.values(formState).every((value) => !!value);

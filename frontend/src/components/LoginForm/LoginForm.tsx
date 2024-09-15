@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { login, selectLoading } from '../../store/features/auth/authSlice';
+import { login, selectLoadingState } from '../../store/features/auth/authSlice';
 import { UserLoginData, LoadingStates } from '../../types/sharedTypes';
 import { Button } from '../Button';
 
@@ -13,7 +13,7 @@ export const LoginForm = () => {
   });
 
   const dispatch = useAppDispatch();
-  const loading = useSelector(selectLoading);
+  const loading = useSelector(selectLoadingState);
   const canSubmit = Object.values(formState).every((value) => !!value);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

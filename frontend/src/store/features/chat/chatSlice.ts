@@ -10,6 +10,7 @@ interface ChatState {
   users: User[];
   loading: LoadingStates;
   error: string | null;
+  serachQuery: string | null;
 }
 
 const initialState: ChatState = {
@@ -18,6 +19,7 @@ const initialState: ChatState = {
   users: [],
   loading: LoadingStates.IDLE,
   error: null,
+  serachQuery: null,
 };
 
 export const fetchUsersList = createAsyncThunk(
@@ -108,10 +110,11 @@ const chatSlice = createSlice({
 export const selectUsers = (state: RootState) => state.chat.users;
 export const selectUserById = (state: RootState, userId: string) =>
   state.chat.users.find((user) => user._id === userId);
-export const selectChatSliceLoading = (state: RootState) => state.chat.loading;
 export const selectChatSliceError = (state: RootState) => state.chat.error;
 export const selectActiveConversation = (state: RootState) =>
   state.chat.selectedConversation;
+export const selectMessages = (state: RootState) => state.chat.messages;
+export const selectLoadingState = (state: RootState) => state.chat.loading;
 
 export const { setSelectedConversations, resetChatSliceState } =
   chatSlice.actions;

@@ -7,19 +7,20 @@ import {
   fetchUsersList,
   setActiveConversationAndFetchMessages,
   selectUsers,
-  selectChatSliceLoading,
   selectChatSliceError,
   selectActiveConversation,
+  selectLoadingState,
 } from '../../store/features/chat/chatSlice';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { LoadingStates } from '../../types/sharedTypes';
 
 export const Conversations = () => {
   const dispatch = useAppDispatch();
 
+  const loadingState = useSelector(selectLoadingState);
   const activeConversation = useSelector(selectActiveConversation);
   const error = useSelector(selectChatSliceError);
   const users = useSelector(selectUsers);
-  const loading = useSelector(selectChatSliceLoading);
 
   useEffect(() => {
     dispatch(fetchUsersList());
@@ -36,11 +37,11 @@ export const Conversations = () => {
   }, []);
 
   return (
-    <div className="relative">
-      {loading === 'loading' && <Spinner />}
-      <div
-        className={`py-2 flex flex-col overflow-auto ${loading === 'loading' ? 'opacity-70' : ''}`}
-      >
+    <div className="relative max-h-[75vh] overflow-auto">
+      {users.length === 0 && loadingState === LoadingStates.LOADING && (
+        <Spinner />
+      )}
+      <div className="py-2 flex flex-col overflow-auto">
         {users.map((user) => (
           <Conversation
             key={user._id}

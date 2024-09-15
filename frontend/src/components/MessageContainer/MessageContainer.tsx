@@ -4,10 +4,13 @@ import ChatsIcon from '../../assets/chats.svg?react';
 import { Messages } from '../Messages';
 import { MessageInput } from '../MessageInput';
 import { RootState } from '../../store/store';
-import { selectUserById } from '../../store/features/chat/chatSlice';
+import {
+  selectUserById,
+  selectMessages,
+} from '../../store/features/chat/chatSlice';
 
 export const MessageContainer = () => {
-  const messages = useSelector((state: RootState) => state.chat.messages);
+  const messages = useSelector(selectMessages);
   const selectedConversation = useSelector(
     (state: RootState) => state.chat.selectedConversation,
   );
@@ -19,7 +22,7 @@ export const MessageContainer = () => {
     <div className="md:min-w-[450px] w-full flex flex-col">
       {selectedConversation ? (
         <>
-          <div className="bg-slate-300 px-4 py-2 mb-2">
+          <div className="bg-slate-200 py-2 px-2 mb-2 mx-4 rounded-lg mr-0">
             <span className="label-text">
               To:{' '}
               <span className="font-slate-900 font-bold">{user?.username}</span>
