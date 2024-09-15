@@ -8,8 +8,6 @@ const axiosInstance = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  // for cookies
-  withCredentials: true,
 });
 
 axiosInstance.interceptors.response.use(
