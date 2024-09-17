@@ -1,10 +1,8 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import User from '../models/user.model';
-import { PASSWORD_MIN_LENGTH } from '../constants';
+import { SALT, TOKEN_EXPIRATION_TIME } from '../constants';
 import { generateUserProfilePic, generateToken } from '../utils';
-
-const SALT = 10;
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -19,7 +17,7 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).send('Invalid credentials');
     }
 
-    const token = generateToken(user._id.toString(), '15d');
+    const token = generateToken(user._id.toString(), TOKEN_EXPIRATION_TIME);
 
     res.status(200).json({
       _id: user._id.toString(),
@@ -40,17 +38,7 @@ export const login = async (req: Request, res: Response) => {
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, password, email, confirmPassword, profilePic } = req.body;
-
-    if (password.length < PASSWORD_MIN_LENGTH) {
-      return res
-        .status(400)
-        .send(`Password must be at least ${PASSWORD_MIN_LENGTH} characters`);
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).send('Passwords do not match');
-    }
+    const { username, password, email, profilePic } = req.body;
 
     const candidate = await User.findOne({ email });
     if (candidate) {
@@ -66,7 +54,7 @@ export const register = async (req: Request, res: Response) => {
       profilePic: profilePic || generateUserProfilePic(username),
     });
 
-    const token = generateToken(user._id.toString(), '15d');
+    const token = generateToken(user._id.toString(), TOKEN_EXPIRATION_TIME);
 
     await user.save();
     res.status(201).json({
