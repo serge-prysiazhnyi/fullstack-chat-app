@@ -1,12 +1,17 @@
 import { Middleware, isAction, MiddlewareAPI } from '@reduxjs/toolkit';
 import { login, logout } from '../features/auth/authSlice';
-import { setUsersOnline } from '../features/chat/chatSlice';
+import { setUsersOnline, setNewMessage } from '../features/chat/chatSlice';
 import { RootState } from '../store';
 import { initializeApp, reloadApp } from '../features/app/appSlice';
 import { LoginResponse } from '../../types/sharedTypes';
 import { socketService } from '../../services/socket/socketService';
 
-const addSocketListeners = (storeAPI: MiddlewareAPI) => {
+const addSocketListeners = (storeAPI: MiddlewareAPI, userId: string) => {
+  socketService.off('connect');
+  socketService.off('disconnect');
+  socketService.off('getOnlineUsers');
+  socketService.off('newMessage');
+
   socketService.on('connect', () => {
     console.log('Socket connected');
   });
@@ -17,6 +22,11 @@ const addSocketListeners = (storeAPI: MiddlewareAPI) => {
 
   socketService.on('getOnlineUsers', (usersOnline: string[]) => {
     storeAPI.dispatch(setUsersOnline(usersOnline));
+  });
+
+  socketService.on('newMessage', ({ message, receiverId }) => {
+    if (!!message && receiverId === userId)
+      storeAPI.dispatch(setNewMessage(message));
   });
 };
 
@@ -30,7 +40,7 @@ export const socketMiddleware: Middleware<{}, RootState> = (storeAPI) => {
 
       socketService.initSocket(token, userId);
 
-      addSocketListeners(storeAPI);
+      addSocketListeners(storeAPI, userId);
     }
 
     if (initializeApp.match(action)) {
@@ -39,7 +49,7 @@ export const socketMiddleware: Middleware<{}, RootState> = (storeAPI) => {
 
       socketService.initSocket(token, userId);
 
-      addSocketListeners(storeAPI);
+      addSocketListeners(storeAPI, userId);
     }
 
     if (reloadApp.match(action)) {

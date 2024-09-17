@@ -4,4 +4,5 @@ export enum apiUrls {
   LOGOUT = 'auth/logout',
   USER = 'user',
   MESSAGE = 'message',
+  SEND_MESSAGE = 'message/send',
 }

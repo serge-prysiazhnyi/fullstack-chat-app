@@ -38,6 +38,10 @@ export class SocketService {
   disconnect() {
     this.socket?.disconnect();
   }
+
+  off(event: string) {
+    this.socket?.off(event);
+  }
 }
 
 export const socketService = new SocketService();

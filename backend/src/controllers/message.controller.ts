@@ -2,6 +2,7 @@ import { Response } from 'express';
 import Message from '../models/message.model';
 import Conversation from '../models/conversation.model';
 import { CustomRequest } from '../types';
+import { getReceiverSocketId, io } from '../socket/socket';
 
 export const sendMessage = async (req: CustomRequest, res: Response) => {
   try {
@@ -44,6 +45,17 @@ export const sendMessage = async (req: CustomRequest, res: Response) => {
       return res
         .status(500)
         .json({ message: 'Failed to create message or update conversation' });
+    }
+
+    const receiverSocketId = getReceiverSocketId(receiverId);
+
+    // if user is online
+    if (receiverSocketId) {
+      // sends event only to the receiver
+      io.to(receiverSocketId).emit('newMessage', {
+        message: newMessage,
+        receiverId,
+      });
     }
 
     return res.status(201).json(newMessage);

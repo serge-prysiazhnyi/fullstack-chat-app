@@ -72,6 +72,31 @@ export const setActiveConversationAndFetchMessages = createAsyncThunk(
   },
 );
 
+export const sendMessage = createAsyncThunk(
+  'chat/sendMessage',
+  async (
+    message: { receiverId: string; message: string },
+    { dispatch, rejectWithValue },
+  ) => {
+    try {
+      const response = await callAPI<Message>({
+        url: `${apiUrls.SEND_MESSAGE}/${message.receiverId}`,
+        method: 'POST',
+        data: message,
+      });
+
+      return response?.data;
+    } catch (error) {
+      const errorMessage =
+        (error as unknown as AxiosError<string>).response?.data ??
+        'Failed to login';
+
+      dispatch(setError(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
 const chatSlice = createSlice({
   name: 'chat',
   initialState,
@@ -81,6 +106,11 @@ const chatSlice = createSlice({
     },
     setMesasges(state, action: PayloadAction<Message[]>) {
       state.messages = action.payload;
+    },
+    setNewMessage(state, action: PayloadAction<Message>) {
+      state.messages = state.messages
+        ? [...state.messages, action.payload]
+        : [action.payload];
     },
     setUsersOnline(state, action: PayloadAction<string[]>) {
       const newUsersOnline: { [key: string]: string } = {};
@@ -135,6 +165,26 @@ const chatSlice = createSlice({
         console.log('action: fetchConversationMessages error', action.error);
         state.error = action.error.message || 'Failed to fetch messages';
       });
+
+    builder
+      .addCase(sendMessage.pending, (state) => {
+        state.loading = LoadingStates.LOADING;
+        state.error = null;
+      })
+      .addCase(
+        sendMessage.fulfilled,
+        (state, action: PayloadAction<Message>) => {
+          state.messages = state.messages
+            ? [...state.messages, action.payload]
+            : [action.payload];
+          state.loading = LoadingStates.SUCCEEDED;
+        },
+      )
+      .addCase(sendMessage.rejected, (state, action) => {
+        state.loading = LoadingStates.FAILED;
+        console.log('action: sendMessage error', action.error);
+        state.error = action.error.message || 'Failed to send message';
+      });
   },
 });
 
@@ -156,5 +206,6 @@ export const {
   resetChatSliceState,
   setMesasges,
   setUsersOnline,
+  setNewMessage,
 } = chatSlice.actions;
 export default chatSlice.reducer;
