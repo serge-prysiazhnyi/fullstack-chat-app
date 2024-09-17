@@ -1,14 +1,21 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import chatReducer from './features/chat/chatSlice';
 import authReducer from './features/auth/authSlice';
+import appReducer from './features/app/appSlice';
+import { socketMiddleware } from './middleware/socketMiddleware';
 
-export const store = configureStore({
-  reducer: {
-    chat: chatReducer,
-    auth: authReducer,
-  },
+const rootReducer = combineReducers({
+  auth: authReducer,
+  app: appReducer,
+  chat: chatReducer,
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().prepend(socketMiddleware),
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
 export type AppDispatch = typeof store.dispatch;
 export type AppStore = typeof store;

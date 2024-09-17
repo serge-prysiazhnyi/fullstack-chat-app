@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import { callAPI } from '../../../services/callAPI';
 import { RootState } from '../../store';
 import { apiUrls } from '../../../services/apiUrls';
@@ -13,6 +14,7 @@ import {
 import { clearLocalStorage } from '../../../utils/clearLocalStorage';
 import { getInitialStorageItem } from '../../../utils/getInitialStorageItem';
 import { resetChatSliceState } from '../chat/chatSlice';
+import { setError } from '../app/appSlice';
 
 interface AuthState {
   token: string | null;
@@ -30,58 +32,85 @@ const initialState: AuthState = {
 
 export const login = createAsyncThunk(
   'auth/login',
-  async (userLoginData: UserLoginData) => {
-    const response = await callAPI<LoginResponse>({
-      method: 'POST',
-      url: apiUrls.LOGIN,
-      data: userLoginData,
-    });
+  async (userLoginData: UserLoginData, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await callAPI<LoginResponse>({
+        method: 'POST',
+        url: apiUrls.LOGIN,
+        data: userLoginData,
+      });
 
-    localStorage.setItem(
-      LocalStorageItems.TOKEN,
-      JSON.stringify(response.data.token),
-    );
-    localStorage.setItem(
-      LocalStorageItems.CHAT_USER,
-      JSON.stringify(response.data),
-    );
+      localStorage.setItem(
+        LocalStorageItems.TOKEN,
+        JSON.stringify(response.data.token),
+      );
+      localStorage.setItem(
+        LocalStorageItems.CHAT_USER,
+        JSON.stringify(response.data),
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        (error as unknown as AxiosError<string>).response?.data ??
+        'Failed to login';
+
+      dispatch(setError(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
   },
 );
 
 export const register = createAsyncThunk(
   'auth/register',
-  async (userRegisterData: UserRegisterData) => {
-    const response = await callAPI<LoginResponse>({
-      method: 'POST',
-      url: apiUrls.REGISTER,
-      data: userRegisterData,
-    });
+  async (userRegisterData: UserRegisterData, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await callAPI<LoginResponse>({
+        method: 'POST',
+        url: apiUrls.REGISTER,
+        data: userRegisterData,
+      });
 
-    localStorage.setItem(
-      LocalStorageItems.TOKEN,
-      JSON.stringify(response.data.token),
-    );
-    localStorage.setItem(
-      LocalStorageItems.CHAT_USER,
-      JSON.stringify(response.data),
-    );
+      localStorage.setItem(
+        LocalStorageItems.TOKEN,
+        JSON.stringify(response.data.token),
+      );
+      localStorage.setItem(
+        LocalStorageItems.CHAT_USER,
+        JSON.stringify(response.data),
+      );
 
-    return response.data;
+      return response.data;
+    } catch (error) {
+      const errorMessage =
+        (error as unknown as AxiosError<string>).response?.data ??
+        'Failed to register';
+
+      dispatch(setError(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
   },
 );
 
 export const logout = createAsyncThunk(
   'auth/logout',
-  async (_, { dispatch }) => {
-    await callAPI({
-      method: 'POST',
-      url: apiUrls.LOGOUT,
-    });
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      await callAPI({
+        method: 'POST',
+        url: apiUrls.LOGOUT,
+      });
 
-    dispatch(resetChatSliceState());
-    clearLocalStorage();
+      dispatch(resetChatSliceState());
+      clearLocalStorage();
+    } catch (error) {
+      const errorMessage =
+        (error as unknown as AxiosError<string>).response?.data ??
+        'Failed to logout';
+
+      dispatch(setError(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
   },
 );
 

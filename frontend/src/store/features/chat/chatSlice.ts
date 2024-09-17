@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import { Message, User, LoadingStates } from '../../../types/sharedTypes';
 import { callAPI } from '../../../services/callAPI';
 import { RootState } from '../../store';
 import { apiUrls } from '../../../services/apiUrls';
+import { setError } from '../app/appSlice';
 
 interface ChatState {
   messages: Message[] | null;
@@ -10,7 +12,7 @@ interface ChatState {
   users: User[];
   loading: LoadingStates;
   error: string | null;
-  serachQuery: string | null;
+  usersOnline: { [key: string]: string };
 }
 
 const initialState: ChatState = {
@@ -19,28 +21,46 @@ const initialState: ChatState = {
   users: [],
   loading: LoadingStates.IDLE,
   error: null,
-  serachQuery: null,
+  usersOnline: {},
 };
 
 export const fetchUsersList = createAsyncThunk(
   'chat/fetchUsersList',
-  async () => {
-    const response = await callAPI<User[]>({
-      url: apiUrls.USER,
-      method: 'GET',
-    });
-    return response?.data || [];
+  async (_, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await callAPI<User[]>({
+        url: apiUrls.USER,
+        method: 'GET',
+      });
+      return response?.data || [];
+    } catch (error) {
+      const errorMessage =
+        (error as unknown as AxiosError<string>).response?.data ??
+        'Failed to login';
+
+      dispatch(setError(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
   },
 );
 
 export const fetchConversationMessages = createAsyncThunk(
   'chat/messages',
-  async (id: string) => {
-    const response = await callAPI<Message[]>({
-      url: `${apiUrls.MESSAGE}/${id}`,
-      method: 'GET',
-    });
-    return response?.data || [];
+  async (id: string, { dispatch, rejectWithValue }) => {
+    try {
+      const response = await callAPI<Message[]>({
+        url: `${apiUrls.MESSAGE}/${id}`,
+        method: 'GET',
+      });
+      return response?.data || [];
+    } catch (error) {
+      const errorMessage =
+        (error as unknown as AxiosError<string>).response?.data ??
+        'Failed to login';
+
+      dispatch(setError(errorMessage));
+      return rejectWithValue(errorMessage);
+    }
   },
 );
 
@@ -58,6 +78,17 @@ const chatSlice = createSlice({
   reducers: {
     setSelectedConversations(state, action: PayloadAction<string>) {
       state.selectedConversation = action.payload;
+    },
+    setMesasges(state, action: PayloadAction<Message[]>) {
+      state.messages = action.payload;
+    },
+    setUsersOnline(state, action: PayloadAction<string[]>) {
+      const newUsersOnline: { [key: string]: string } = {};
+      for (const userId of action.payload) {
+        newUsersOnline[userId] = userId;
+      }
+
+      state.usersOnline = newUsersOnline;
     },
     resetChatSliceState(state) {
       state.messages = initialState.messages;
@@ -115,7 +146,15 @@ export const selectActiveConversation = (state: RootState) =>
   state.chat.selectedConversation;
 export const selectMessages = (state: RootState) => state.chat.messages;
 export const selectLoadingState = (state: RootState) => state.chat.loading;
+export const selectUsersOnline = (state: RootState) => state.chat.usersOnline;
+export const selectIsUserOnline = (state: RootState, userId: string) => {
+  return Object.prototype.hasOwnProperty.call(state.chat.usersOnline, userId);
+};
 
-export const { setSelectedConversations, resetChatSliceState } =
-  chatSlice.actions;
+export const {
+  setSelectedConversations,
+  resetChatSliceState,
+  setMesasges,
+  setUsersOnline,
+} = chatSlice.actions;
 export default chatSlice.reducer;
