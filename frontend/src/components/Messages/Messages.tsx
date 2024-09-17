@@ -18,7 +18,10 @@ export const Messages: React.FC<MessagesProps> = ({ messages }) => {
   >(messages);
 
   return (
-    <div className="px-4 flex-1 overflow-auto max-h-[80vh] scrollbar-thin font-semibold">
+    <div
+      className=" flex-1 overflow-auto scrollbar-thin font-semibold"
+      data-testid="messages"
+    >
       {isLoading === LoadingStates.LOADING && !messages ? (
         <MessagesSkeleton />
       ) : (

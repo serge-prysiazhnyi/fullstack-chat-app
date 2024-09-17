@@ -33,7 +33,7 @@ function App() {
   }, [error]);
 
   return (
-    <div className="p-4 grid auto-cols-auto">
+    <div className="grid auto-cols-auto min-h-screen">
       <Toaster />
       <Routes>
         {token ? (

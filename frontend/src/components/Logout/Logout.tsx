@@ -28,11 +28,12 @@ export const Logout = () => {
   return (
     <Button
       onClick={handleLogout}
-      className="flex bg-transparent hover:bg-orange-300 p-2 rounded cursor-pointer"
+      className="flex bg-transparent hover:bg-slate-200 p-2 rounded cursor-pointer flex items-center"
       loading={loading === LoadingStates.LOADING}
+      dataTestId="logout-button"
     >
-      <LogoutIcon className="w-full h-6" />
-      <span className="ml-2">Logout</span>
+      <LogoutIcon className="w-auto h-4" />
+      <span className="ml-2 text-sm">Logout</span>
     </Button>
   );
 };

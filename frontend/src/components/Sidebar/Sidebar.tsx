@@ -4,7 +4,7 @@ import { Logout } from '../Logout';
 
 export const Sidebar = () => {
   return (
-    <div className="border-r border-slate-500 pr-4" data-testid="Sidebar">
+    <div className="p-2 max-h-screen flex flex-col" data-testid="Sidebar">
       <SearchConversation />
       <div className="divider my-0 opacity-0" />
       <Conversations />

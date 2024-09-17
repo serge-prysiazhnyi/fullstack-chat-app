@@ -7,6 +7,7 @@ import {
   sendMessage,
   selectActiveConversation,
 } from '../../store/features/chat/chatSlice';
+import { Button } from '../Button';
 
 export const MessageInput = () => {
   const dispatch = useAppDispatch();
@@ -23,8 +24,9 @@ export const MessageInput = () => {
 
   return (
     <form
-      className="px-4 my-3 absolute bottom-0 right-0 w-full pr-0"
+      className="px-4 my-3 relative pr-0"
       onSubmit={handleSubmit}
+      data-testid="send-message-form"
     >
       <div className="w-full ">
         <input
@@ -34,12 +36,13 @@ export const MessageInput = () => {
           className="border text-sm rounded-lg block w-full p-2 bg-slate-200 border-gray-300 pr-12"
           placeholder="Type a message..."
         />
-        <button
-          type="submit"
+        <Button
           className="absolute inset-y-0 end-0 flex items-center pe-3 right-1"
+          type="submit"
+          dataTestId="send-message-button"
         >
           <SendIcon className="w-full h-6 " />
-        </button>
+        </Button>
       </div>
     </form>
   );

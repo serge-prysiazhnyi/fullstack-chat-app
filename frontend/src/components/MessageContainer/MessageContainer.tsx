@@ -19,10 +19,13 @@ export const MessageContainer = () => {
   );
 
   return (
-    <div className="md:min-w-[450px] w-full flex flex-col">
+    <div
+      className="md:min-w-[450px] w-full flex flex-col relative p-2 max-h-screen"
+      data-testid="message-container"
+    >
       {selectedConversation ? (
         <>
-          <div className="bg-slate-200 py-2 px-2 mb-2 mx-4 rounded-lg mr-0">
+          <div className="bg-slate-200 py-2 pl-2 mb-2 rounded-lg">
             <span className="label-text">
               To:{' '}
               <span className="font-slate-900 font-bold">
@@ -34,7 +37,10 @@ export const MessageContainer = () => {
           <MessageInput />
         </>
       ) : (
-        <div className="flex items-center justify-center w-full h-full">
+        <div
+          className="flex items-center justify-center w-full h-full"
+          data-testid="message-container-placeholder"
+        >
           <div className="px-4 text-center sm:text-lg md:text-xl text-gray-700 font-semibold flex flex-col items-center gap-2">
             <p>Select a chat to start messaging</p>
             <ChatsIcon className="w-full h-12" />

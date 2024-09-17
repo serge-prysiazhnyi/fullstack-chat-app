@@ -28,7 +28,7 @@ export const Conversations = () => {
   }, []);
 
   return (
-    <div className="relative max-h-[75vh] overflow-auto">
+    <div className="relative overflow-auto grow" data-testid="conversations">
       {users.length === 0 && loadingState === LoadingStates.LOADING && (
         <Spinner />
       )}

@@ -64,6 +64,7 @@ export const LoginForm = () => {
         loading={loading === LoadingStates.LOADING}
         disabled={!canSubmit}
         type="submit"
+        dataTestId="login-button"
       >
         Submit
       </Button>

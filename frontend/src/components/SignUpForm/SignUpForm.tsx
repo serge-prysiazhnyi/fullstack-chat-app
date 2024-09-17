@@ -118,6 +118,7 @@ export const SignUpForm = () => {
         loading={loading === LoadingStates.LOADING}
         disabled={!canSubmit}
         type="submit"
+        dataTestId="submit-button"
       >
         Submit
       </Button>
