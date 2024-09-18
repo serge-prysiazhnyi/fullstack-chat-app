@@ -4,16 +4,17 @@
   "description": "sprysiazhnyi Node.js training",
   "main": "dist/index.js",
   "scripts": {
-    "start:backend": "ts-node backend/src/index.ts",
+    "start:backend": "node backend/dist/index.js",
     "build:backend": "tsc -p backend",
     "dev:backend": "nodemon backend/src/index.ts",
     "start:frontend": "vite frontend",
-    "build:frontend": "tsc -b && vite build frontend",
+    "build:frontend": "tsc -b frontend && vite build frontend",
     "preview": "vite preview frontend",
     "lint": "eslint",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "app": "npm install && npm run build:backend && tsc -b frontend && npm run build:frontend"
   },
   "keywords": [],
   "author": "",

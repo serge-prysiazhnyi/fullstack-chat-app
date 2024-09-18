@@ -4,7 +4,7 @@ import { AppStore } from '../store/store';
 const axiosInstance = axios.create({
   baseURL: import.meta.env.DEV
     ? import.meta.env.VITE_REACT_APP_API_BASE_URL
-    : 'https://www.todo.com/api/',
+    : '/api/',
   headers: {
     'Content-Type': 'application/json',
   },
