@@ -13,8 +13,7 @@
     "lint": "eslint",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,scss,md}\"",
-    "prepare": "husky",
-    "app": "npm install && npm run build:backend && tsc -b frontend && npm run build:frontend"
+    "app": "npm run build:backend && tsc -b frontend && npm run build:frontend"
   },
   "keywords": [],
   "author": "",
@@ -83,5 +82,5 @@
       "prettier --write"
     ]
   },
-  "prepare": "husky install"
+  "prepare": "husky"
 }
