@@ -5,7 +5,9 @@ dotenv.config();
 
 export const connectToMongoDB = async () => {
   try {
-    mongoose.connect(`mongodb://localhost:27017/${process.env.DB_NAME}`);
+    mongoose.connect(
+      `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.zqvuhhm.mongodb.net/${process.env.DB_NAME}`,
+    );
     console.log('Connected to MongoDB');
   } catch (e) {
     console.log(`Error connecting to MongoDB: ${(e as Error).message}`);
