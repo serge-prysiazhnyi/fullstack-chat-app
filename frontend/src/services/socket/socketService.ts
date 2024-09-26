@@ -1,7 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 
-const SOCKET_URL =
-  import.meta.env.VITE_REACT_APP_SOCKET_BASE_URL || 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_REACT_APP_SOCKET_BASE_URL || '/';
 
 export class SocketService {
   private socket: Socket | null = null;

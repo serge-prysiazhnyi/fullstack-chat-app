@@ -24,24 +24,24 @@ export const MessageInput = () => {
 
   return (
     <form
-      className="px-4 my-3 relative pr-0"
+      className="px-4 my-3 pr-0"
       onSubmit={handleSubmit}
       data-testid="send-message-form"
     >
-      <div className="w-full ">
+      <div className="w-full flex rounded-lg border border-gray-300 bg-slate-200">
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           type="text"
-          className="border text-sm rounded-lg block w-full p-2 bg-slate-200 border-gray-300 pr-12"
+          className="text-sm block w-full p-2 pr-12 bg-slate-200 grow"
           placeholder="Type a message..."
         />
         <Button
-          className="absolute inset-y-0 end-0 flex items-center pe-3 right-1"
+          className="flex items-center pe-3 right-1 basis-12"
           type="submit"
           dataTestId="send-message-button"
         >
-          <SendIcon className="w-full h-6 " />
+          <SendIcon className="w-full h-6" />
         </Button>
       </div>
     </form>

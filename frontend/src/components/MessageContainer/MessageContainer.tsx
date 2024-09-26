@@ -25,10 +25,10 @@ export const MessageContainer = () => {
     >
       {selectedConversation ? (
         <>
-          <div className="bg-slate-200 py-2 pl-2 mb-2 rounded-lg">
+          <div className="bg-slate-200 py-2 ml-14 pl-2 mb-2 rounded-lg lg:ml-0">
             <span className="label-text">
               To:{' '}
-              <span className="font-slate-900 font-bold">
+              <span className="font-slate-900 font-bold leading-8">
                 {receiver?.username}
               </span>
             </span>

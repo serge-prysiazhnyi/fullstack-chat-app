@@ -7,7 +7,7 @@ const SignUp = () => {
       <SignUpForm />
       <Link
         to="/login"
-        className="p-2 block"
+        className="p-2 block text-sky-500 font-medium hover:text-sky-700"
       >{`Already have an account?`}</Link>
     </div>
   );
