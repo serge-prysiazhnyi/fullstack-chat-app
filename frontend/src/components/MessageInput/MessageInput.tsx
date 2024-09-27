@@ -24,20 +24,19 @@ export const MessageInput = () => {
 
   return (
     <form
-      className="px-4 my-3 pr-0"
+      className="my-3"
       onSubmit={handleSubmit}
       data-testid="send-message-form"
     >
-      <div className="w-full flex rounded-lg border border-gray-300 bg-slate-200">
-        <input
+      <div className="w-full flex rounded-lg border border-gray-300 bg-slate-200 relative">
+        <textarea
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          type="text"
-          className="text-sm block w-full p-2 pr-12 bg-slate-200 grow"
+          className="text-base block w-full p-2 pr-12 bg-slate-200"
           placeholder="Type a message..."
         />
         <Button
-          className="flex items-center pe-3 right-1 basis-12"
+          className="absolute flex max-w-12 items-center px-3 top-0 bottom-0 right-1.5"
           type="submit"
           dataTestId="send-message-button"
         >

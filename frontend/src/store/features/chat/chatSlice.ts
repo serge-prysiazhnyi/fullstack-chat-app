@@ -108,9 +108,11 @@ const chatSlice = createSlice({
       state.messages = action.payload;
     },
     setNewMessage(state, action: PayloadAction<Message>) {
-      state.messages = state.messages
-        ? [...state.messages, action.payload]
-        : [action.payload];
+      if (action.payload.senderId === state.selectedConversation) {
+        state.messages = state.messages
+          ? [...state.messages, action.payload]
+          : [action.payload];
+      }
     },
     setUsersOnline(state, action: PayloadAction<string[]>) {
       const newUsersOnline: { [key: string]: string } = {};
